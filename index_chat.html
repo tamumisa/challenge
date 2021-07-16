@@ -1,0 +1,87 @@
+<!-- index_chat.html -->
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Chatapp</title>
+    <style>
+        .name{
+            font-size: 10px;
+        }
+        .text{
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <div>
+        <div>
+            <input type="text" id="username">
+        </div>
+        <div>
+            <textarea id="text" rows="10"></textarea>
+            <button id ="send">send</button>
+        </div>
+        <div id="output"></div>
+    </div>
+    
+
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+    https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-analytics.js"></script>
+
+<script>
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+var firebaseConfig = {
+    apiKey: "AIzaSyAt-hc1NljpHoDVWQHHLIw4YL0e-VgrRX0",
+    authDomain: "chatapp-da4e0.firebaseapp.com",
+    projectId: "chatapp-da4e0",
+    storageBucket: "chatapp-da4e0.appspot.com",
+    messagingSenderId: "708476708021",
+    appId: "1:708476708021:web:077bdf0b87ff8a0e32cafc",
+    measurementId: "G-TR8RW3K28H"
+};
+  // Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+firebase.analytics();
+
+//Msg送信準備
+var newPostRef = firebase.database();
+let room = "room1";
+
+
+const send = document.getElementById("send");
+const username = document.getElementById("username");
+const text = document.getElementById("text");
+const output = document.getElementById("output")
+
+  //Msg送信処理
+send.addEventListener('click', function(){
+    newPostRef.ref(room).push({
+        username: username.value,
+        text: text.value
+    });
+    text.value = "";
+});
+
+  //Msg受信処理
+newPostRef.ref(room).on("child_added",function(data){
+    const v = data.val();
+    const k = data.key;
+    let str ="";
+
+    str += '<div class="name">'+ v.username +'</div>';
+    str += '<div class="text">'+ v.text +'</div>';
+
+    output.innerHTML += str;
+
+});
+</script>
+</body>
+</html>
